@@ -105,6 +105,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import com.maizon.maizosnes.ui.theme.MaizoTheme as MaizoMaterialTheme
 import java.io.File
 import kotlin.math.floor
 import kotlin.math.min
@@ -192,14 +193,7 @@ private fun Modifier.dialogGamepadKeys(onBack: () -> Unit): Modifier = composed 
 
 @Composable
 internal fun MaizoTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = darkColorScheme(
-            primary = Accent, secondary = Mint, background = Bg, surface = Panel,
-            surfaceVariant = PanelRaised, onSurfaceVariant = Muted,
-            onPrimary = Bg, onBackground = Color.White, onSurface = Color.White
-        ),
-        content = content
-    )
+    MaizoMaterialTheme(content)
 }
 
 @Composable
