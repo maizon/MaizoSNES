@@ -1,7 +1,7 @@
-.DS_Store
-Thumbs.db
-.env
-*.log
-node_modules/
-dist/
-build/
+.gradle/
+.idea/
+local.properties
+**/build/
+**/.cxx/
+app/src/main/cpp/third_party/snes9x/
+app/src/main/assets/licenses/
