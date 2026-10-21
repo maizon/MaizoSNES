@@ -71,7 +71,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -105,6 +104,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import com.maizon.maizosnes.ui.controls.MaizoTouchControls
 import com.maizon.maizosnes.ui.theme.MaizoTheme as MaizoMaterialTheme
 import java.io.File
 import kotlin.math.floor
@@ -149,12 +149,13 @@ internal data class AppSettings(
     val audioBufferMs: Int = 40
 )
 
-private val Bg = Color(0xFF090D19)
-private val Panel = Color(0xFF171E2E)
-private val PanelRaised = Color(0xFF242D40)
-private val Accent = Color(0xFFAA96FF)
-private val Mint = Color(0xFF72E8C7)
-private val Muted = Color(0xFFBAC5D7)
+private val Bg = Color(0xFFF6F8FB)
+private val Panel = Color(0xFFFFFFFF)
+private val PanelRaised = Color(0xFFEAF0F5)
+private val Accent = Color(0xFF2E5E86)
+private val Mint = Color(0xFF1F7A72)
+private val Muted = Color(0xFF52616F)
+private val Warning = Color(0xFF9A4D00)
 
 /** Visible directional-controller focus, without affecting touch/click actions. */
 private fun Modifier.padFocusRing(): Modifier = composed {
@@ -193,7 +194,7 @@ private fun Modifier.dialogGamepadKeys(onBack: () -> Unit): Modifier = composed 
 
 @Composable
 internal fun MaizoTheme(content: @Composable () -> Unit) {
-    MaizoMaterialTheme(content)
+    MaizoMaterialTheme(content = content)
 }
 
 @Composable
@@ -362,7 +363,7 @@ internal fun MaizoEmulatorApp(
                 Surface(
                     modifier = Modifier.fillMaxWidth().heightIn(max = 690.dp)
                         .dialogGamepadKeys { onGameMenuChanged(false) },
-                    shape = RoundedCornerShape(26.dp), color = Bg, tonalElevation = 12.dp
+                    shape = RoundedCornerShape(26.dp), color = Bg, tonalElevation = 2.dp
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -401,7 +402,7 @@ internal fun MaizoEmulatorApp(
         containerColor = Bg,
         contentWindowInsets = WindowInsets(0),
         bottomBar = {
-            NavigationBar(containerColor = Color(0xFF101624), modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)) {
+            NavigationBar(containerColor = Panel, modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)) {
                 NavigationBarItem(screen == AppScreen.LIBRARY, { onSetScreen(AppScreen.LIBRARY) }, icon = { Icon(Icons.Default.Gamepad, null) }, label = { Text("Biblioteca") }, modifier = Modifier.padFocusRing())
                 NavigationBarItem(screen == AppScreen.MULTIPLAYER, { onSetScreen(AppScreen.MULTIPLAYER) }, icon = { Icon(Icons.Default.Groups, null) }, label = { Text("Online") }, modifier = Modifier.padFocusRing())
                 NavigationBarItem(screen == AppScreen.SETTINGS, { onSetScreen(AppScreen.SETTINGS) }, icon = { Icon(Icons.Default.Tune, null) }, label = { Text("Ajustes") }, modifier = Modifier.padFocusRing())
@@ -476,7 +477,7 @@ private fun CreditsScreen(modifier: Modifier, onOpenInstagram: () -> Unit) {
                 Text("MAICON NASCIMENTO", fontWeight = FontWeight.Black,
                     fontSize = 21.sp, color = Mint)
                 Text("Criador e responsável pelo projeto MaizoSNES.",
-                    color = Color.White, fontSize = 13.sp)
+                    color = Color(0xFF17212B), fontSize = 13.sp)
                 Button(onClick = onOpenInstagram,
                     modifier = Modifier.focusRequester(firstFocus),
                     colors = ButtonDefaults.buttonColors(containerColor = Accent)) {
@@ -552,7 +553,7 @@ private fun LibraryScreen(
         Row(verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             Box(Modifier.size(48.dp).clip(RoundedCornerShape(15.dp))
-                .background(Brush.linearGradient(listOf(Accent, Color(0xFF4540A1)))),
+                .background(Brush.linearGradient(listOf(Accent, Color(0xFF6D91B5)))),
                 contentAlignment = Alignment.Center) {
                 Icon(Icons.Default.Gamepad, null, modifier = Modifier.size(28.dp))
             }
@@ -657,7 +658,7 @@ private fun LibraryScreen(
                     Text(info?.title ?: File(name).nameWithoutExtension,
                         fontWeight = FontWeight.Bold, fontSize = 21.sp)
                     Text("Região: " + (info?.region ?: "desconhecida"), color = Muted)
-                    info?.warning?.let { Text(it, color = Color(0xFFFFBD85), fontSize = 12.sp) }
+                        info?.warning?.let { Text(it, color = Warning, fontSize = 12.sp) }
                     Button(onClick = { selectedRom = null; onOpenRom(name) },
                         modifier = Modifier.fillMaxWidth().focusRequester(detailFocus)) { Text("▶ JOGAR") }
                     OutlinedButton(onClick = { selectedRom = null; onApplyPatchToRom(name) },
@@ -680,7 +681,7 @@ private fun LibraryScreen(
                     OutlinedButton(onClick = { selectedRom = null; renameTarget = name },
                         modifier = Modifier.fillMaxWidth()) { Text("RENOMEAR") }
                     TextButton(onClick = { confirmRemove = name; selectedRom = null }) {
-                        Text("REMOVER DA BIBLIOTECA", color = Color(0xFFFFBD85))
+                        Text("REMOVER DA BIBLIOTECA", color = Warning)
                     }
                     TextButton(onClick = { selectedRom = null }) { Text("VOLTAR") }
                 }
@@ -729,7 +730,7 @@ private fun RomCard(
             Box(
                 Modifier.fillMaxWidth().height(if (compact) 102.dp else 150.dp)
                     .background(Brush.linearGradient(
-                        listOf(Color(0xFF35305F), Color(0xFF141C30), Color(0xFF0A2D36))
+                        listOf(Color(0xFFE7EEF3), Color(0xFFDCE8EF), Color(0xFFD3E7E3))
                     )),
                 contentAlignment = Alignment.Center
             ) {
@@ -747,11 +748,11 @@ private fun RomCard(
                 Surface(
                     modifier = Modifier.align(Alignment.TopEnd).padding(7.dp),
                     shape = RoundedCornerShape(8.dp),
-                    color = Color(0xC5101523)
+                    color = Color(0xFFEAF0F5)
                 ) {
                     Text(if (current) "EM MEMÓRIA" else "SNES",
                         modifier = Modifier.padding(horizontal = 7.dp, vertical = 4.dp),
-                        color = if (current) Mint else Color.White,
+                        color = if (current) Mint else Color(0xFF17212B),
                         fontSize = 9.sp, fontWeight = FontWeight.Bold)
                 }
             }
@@ -859,11 +860,11 @@ private fun MultiplayerScreen(
         Text("Crie uma sala, convide alguém e joguem a mesma ROM. " +
             "Online, Wi-Fi local ou dois controles no mesmo aparelho.",
             color = Muted, fontSize = 12.sp, lineHeight = 19.sp)
-        if (!ready) Surface(color = Color(0xFF31283D), shape = RoundedCornerShape(14.dp)) {
+        if (!ready) Surface(color = Color(0xFFF4E9D9), shape = RoundedCornerShape(14.dp)) {
             Text("① Antes de conectar, escolha e abra um jogo na Biblioteca. " +
                 "② Volte aqui para criar ou entrar em uma sala.",
                 modifier = Modifier.fillMaxWidth().padding(13.dp),
-                color = Color(0xFFFFDEAB), fontSize = 12.sp, lineHeight = 18.sp)
+                color = Warning, fontSize = 12.sp, lineHeight = 18.sp)
         }
 
         Card(colors = CardDefaults.cardColors(containerColor = Panel),
@@ -887,7 +888,7 @@ private fun MultiplayerScreen(
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = if (choice == connectionMode)
-                                Color(0xFF2B2851) else PanelRaised)
+                                Color(0xFFD7EFEB) else PanelRaised)
                     ) {
                         Row(Modifier.fillMaxWidth().padding(10.dp),
                             verticalAlignment = Alignment.CenterVertically) {
@@ -962,7 +963,7 @@ private fun MultiplayerScreen(
                     iceServerOverrides, onIceOverridesChanged,
                     iceTestStatus, onTestIce, !active)
                 if (active) Text("O buffer não pode ser alterado no meio da sessão.",
-                    color = Color(0xFFFFBD85), fontSize = 10.sp)
+                    color = Warning, fontSize = 10.sp)
             }
         }
 
@@ -975,7 +976,7 @@ private fun MultiplayerScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("SALAS ONLINE", modifier = Modifier.weight(1f),
                         fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                    Surface(color = if (autoServers.isNotEmpty()) Color(0xFF1C473D)
+                    Surface(color = if (autoServers.isNotEmpty()) Color(0xFFD7EFEB)
                         else PanelRaised, shape = RoundedCornerShape(100.dp)) {
                         Text(if (autoServers.isNotEmpty()) "● ONLINE" else "○ OFFLINE",
                             modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
@@ -989,7 +990,7 @@ private fun MultiplayerScreen(
                     enabled = ready && !active,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Mint)) {
-                    Text("JOGO RÁPIDO • ENTRAR OU CRIAR", color = Color(0xFF111827),
+                    Text("JOGO RÁPIDO • ENTRAR OU CRIAR", color = Color.White,
                         fontWeight = FontWeight.ExtraBold, fontSize = 12.sp)
                 }
                 Text("Jogo rápido procura amigos na LAN e salas online; se não encontrar, " +
@@ -1023,7 +1024,7 @@ private fun MultiplayerScreen(
                     }
                 }
                 if (active) {
-                    Surface(color = Color(0xFF173A39), shape = RoundedCornerShape(14.dp)) {
+                    Surface(color = Color(0xFFE2F1EE), shape = RoundedCornerShape(14.dp)) {
                         Column(Modifier.fillMaxWidth().padding(14.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text("SESSÃO ATIVA • AGUARDANDO OU JOGANDO",
@@ -1032,7 +1033,7 @@ private fun MultiplayerScreen(
                                 "sessão estiver aberta. O convidado abre a mesma ROM, " +
                                 "toca em Atualizar salas e escolhe sua sala. " +
                                 "Cancele a sessão para criar outra.",
-                                color = Color.White, fontSize = 11.sp, lineHeight = 17.sp)
+                                color = Color(0xFF17212B), fontSize = 11.sp, lineHeight = 17.sp)
                             OutlinedButton(onClick = onStop, modifier = Modifier.fillMaxWidth()) {
                                 Text("CANCELAR SALA / DESCONECTAR", fontWeight = FontWeight.Bold)
                             }
@@ -1046,7 +1047,7 @@ private fun MultiplayerScreen(
                         Row(Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(server.relay.name + " • " + server.relay.region,
-                                color = Color.White, fontSize = 12.sp)
+                                color = Color(0xFF17212B), fontSize = 12.sp)
                             Text("Resposta HTTP " + server.latencyMs + " ms",
                                 color = Muted, fontSize = 10.sp)
                         }
@@ -1089,7 +1090,7 @@ private fun MultiplayerScreen(
                                             else -> "Versão da ROM será validada ao conectar"
                                         }, color = if (cheatsAllowed &&
                                             (hashCompatible || ((room.tls || room.wss) && receiveRomAllowed))) Mint
-                                            else Color(0xFFFFBD85), fontSize = 10.sp
+                                            else Warning, fontSize = 10.sp
                                     )
                                 }
                                 Text("ENTRAR ›", color = Mint,
@@ -1180,7 +1181,7 @@ private fun MultiplayerScreen(
                                     room.romHash.isNotBlank() -> "ROM COMPATÍVEL POR SHA-256"
                                     else -> "Compatibilidade conferida ao entrar"
                                 }, color = if ((hashCompatible || receiveRomAllowed) && cheatsAllowed) Mint
-                                    else Color(0xFFFFBD85), fontSize = 10.sp)
+                                    else Warning, fontSize = 10.sp)
                             }
                             Text("ENTRAR ›", color = Mint, fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold)
@@ -1254,7 +1255,7 @@ private fun MultiplayerScreen(
                                         else -> "ROM verificada ao entrar"
                                     }, color = if (cheatsAllowed &&
                                         (hashCompatible || ((room.tls || room.wss) && receiveRomAllowed))) Mint
-                                        else Color(0xFFFFBD85), fontSize = 10.sp
+                                        else Warning, fontSize = 10.sp
                                 )
                             }
                             Text("ENTRAR ›", color = Mint, fontWeight = FontWeight.Bold,
@@ -1264,13 +1265,13 @@ private fun MultiplayerScreen(
                 }
                 if (active) OutlinedButton(onClick = onStop,
                     modifier = Modifier.fillMaxWidth()) { Text("ENCERRAR SESSÃO") }
-                Surface(color = Color(0xFF242C3B), shape = RoundedCornerShape(12.dp)) {
+                Surface(color = PanelRaised, shape = RoundedCornerShape(12.dp)) {
                     Text(status, modifier = Modifier.padding(12.dp), color = Mint, fontSize = 12.sp)
                 }
                 Text("Relay sem TLS: requer a mesma ROM e não compartilha arquivos. " +
                     "Relay TLS certificado e diretório HTTPS permitem oferecer ROM " +
                     "autorizada com confirmação do host e do cliente. Não é E2E.",
-                    fontSize = 11.sp, color = Color(0xFFFFBD85), lineHeight = 16.sp)
+                    fontSize = 11.sp, color = Warning, lineHeight = 16.sp)
             }
         }
 
@@ -1286,7 +1287,7 @@ private fun MultiplayerScreen(
                 if (connectionMode == NetworkMode.INTERNET) {
                     Text("MODO INTERNET: use VPN privada ou conexão confiável. " +
                         "Não existe NAT traversal nem criptografia nativa; não exponha " +
-                        "a porta publicamente.", color = Color(0xFFFFBD85), fontSize = 11.sp)
+                        "a porta publicamente.", color = Warning, fontSize = 11.sp)
                 }
                 Text(if (ready) "Jogo aberto: ${romName ?: "SNES"}"
                     else "Nenhum jogo aberto. Para criar sala, abra uma ROM. Para entrar sem a ROM, autorize o recebimento abaixo.",
@@ -1335,7 +1336,7 @@ private fun MultiplayerScreen(
                             Text("CONECTAR VIA IP • JOGADOR 2")
                         }
                 }
-                Surface(color = Color(0xFF242C3B), shape = RoundedCornerShape(12.dp)) {
+                Surface(color = PanelRaised, shape = RoundedCornerShape(12.dp)) {
                     Text(status, modifier = Modifier.padding(11.dp), color = Mint, fontSize = 12.sp)
                 }
             }
@@ -1367,10 +1368,12 @@ private fun GameScreen(
     var editIndividual by remember(romName) { mutableStateOf(false) }
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         VideoSurface(settings, onSurfaceChanged, onGpuReady)
-        if (settings.touch.enabled) TouchOverlay(
-            settings.touch, onInputChanged, editingControls, editIndividual,
-            onLayoutChanged = { onSettingsChanged(settings.copy(touch = it)) }
-        )
+        if (settings.touch.enabled) MaizoTouchControls {
+            TouchOverlay(
+                settings.touch, onInputChanged, editingControls, editIndividual,
+                onLayoutChanged = { onSettingsChanged(settings.copy(touch = it)) }
+            )
+        }
         if (!toolbarExpanded && !editingControls) {
             Box(
                 modifier = (if (settings.touch.enabled &&
@@ -2338,7 +2341,7 @@ private fun EmulatorSettings(
                     Text(cheatStatus, color = Mint, fontSize = 11.sp, lineHeight = 16.sp)
                     if (cheatsLocked) {
                         Text("CHEATS DESATIVADOS DURANTE LAN/ONLINE para evitar dessincronização.",
-                            color = Color(0xFFFFBA72), fontSize = 11.sp)
+                            color = Warning, fontSize = 11.sp)
                     }
                     OutlinedButton(onClick = onRefreshCheats, enabled = !cheatsLocked,
                         modifier = Modifier.fillMaxWidth()) {
@@ -2407,7 +2410,7 @@ private fun EmulatorSettings(
                         iceServerOverrides, onIceOverridesChanged,
                         iceTestStatus, onTestIce, !cheatsLocked)
                     if (cheatsLocked) Text("Para trocar modo, encerre a sessão ativa.",
-                        color = Color(0xFFFFC47E), fontSize = 11.sp)
+                        color = Warning, fontSize = 11.sp)
                     Text("LAN usa descoberta automática ou IP manual. Internet " +
                         "usa fila de inputs antecipados em vez de um RTT por quadro. " +
                         "O convidado copia temporariamente as opções compatíveis do host; " +
@@ -2448,7 +2451,7 @@ private fun EmulatorSettings(
                             if (!devError) devCode = ""
                         }) { Text("DESBLOQUEAR") }
                         if (devError) Text("Código incorreto.",
-                            color = Color(0xFFFFAA88), fontSize = 11.sp)
+                            color = Warning, fontSize = 11.sp)
                     } else {
                         Text("DEV DESBLOQUEADO", color = Mint, fontWeight = FontWeight.Bold)
                         ToggleSettingRow(
@@ -2463,7 +2466,7 @@ private fun EmulatorSettings(
                         Text("Compartilhamento autorizado funciona sem código 9090; " +
                             "mas pode ser desativado. A Internet exige relay TLS " +
                             "e consentimento por sessão. O relay pode ler o tráfego.",
-                            color = Color(0xFFFFC47E), fontSize = 11.sp)
+                            color = Warning, fontSize = 11.sp)
                     }
                 }
                 "Estados" -> {
@@ -2534,7 +2537,7 @@ private fun EmulatorSettings(
 private fun ChoiceRow(title: String, description: String, selected: Boolean, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().padFocusRing().clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = if (selected) Color(0xFF252447) else Panel),
+        colors = CardDefaults.cardColors(containerColor = if (selected) Color(0xFFD7EFEB) else Panel),
         shape = RoundedCornerShape(14.dp)
     ) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {

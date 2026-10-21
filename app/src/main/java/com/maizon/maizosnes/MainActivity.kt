@@ -179,8 +179,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = android.graphics.Color.rgb(9, 13, 24)
-        window.navigationBarColor = android.graphics.Color.rgb(9, 13, 24)
+        window.statusBarColor = android.graphics.Color.rgb(246, 248, 251)
+        window.navigationBarColor = android.graphics.Color.rgb(246, 248, 251)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         romDirectory.mkdirs()
         stateDirectory.mkdirs()
         favoriteRoms.value = prefs.getStringSet("library_favorites", emptySet())?.toSet() ?: emptySet()
