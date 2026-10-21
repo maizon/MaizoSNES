@@ -198,7 +198,7 @@ internal fun MaizoTheme(content: @Composable () -> Unit) {
 }
 
 @Composable
-internal fun MaizoEmulatorApp(
+internal fun MainScreen(
     romNames: List<String>,
     coverBitmaps: Map<String, Bitmap>,
     romHeaders: Map<String, SnesRomHeader.Details>,

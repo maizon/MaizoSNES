@@ -238,7 +238,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MaizoTheme {
-                MaizoEmulatorApp(
+                MainScreen(
                     romNames = romFiles.value,
                     coverBitmaps = coverBitmaps.toMap(),
                     romHeaders = romHeaders.toMap(),
