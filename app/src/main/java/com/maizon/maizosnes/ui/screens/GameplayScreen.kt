@@ -12,7 +12,7 @@ import com.maizon.maizosnes.ui.controls.MaizoTouchControls
 fun GameplayScreen(romId: String) {
     Box(Modifier.fillMaxSize()) {
         Text(romId, Modifier.align(Alignment.TopStart))
-        MaizoTouchControls(Modifier.fillMaxSize())
+        MaizoTouchControls(Modifier.fillMaxSize()) {}
     }
 }
 

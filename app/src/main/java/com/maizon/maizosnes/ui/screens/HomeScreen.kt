@@ -22,7 +22,7 @@ import com.maizon.maizosnes.ui.components.MaizoTopBar
 fun HomeScreen(onImportRom: () -> Unit = {}, legacyContent: @Composable () -> Unit = {}) {
     var selectedTab by remember { mutableIntStateOf(0) }
     Column(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalArrangement = Arrangement.Top) {
-        MaizoTopBar("MaizoSNES", "Biblioteca de jogos")
+        MaizoTopBar("MaizoSNES", subtitle = "Biblioteca de jogos")
         OutlinedTextField(value = "", onValueChange = {}, label = { Text("Buscar jogos") }, singleLine = true)
         TabRow(selectedTabIndex = selectedTab) {
             listOf("Recentes", "Favoritos", "Todos").forEachIndexed { index, label ->
